@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -55,7 +56,11 @@ public class VerifyNumber extends AppCompatActivity {
                     mMessage.setVisibility(View.VISIBLE);
                 }
                 else{
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mVerify.setEnabled(false); //Disable the button when verifying
+
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerifyCode, mCode.getText().toString());
+                    signInWithPhoneAuthCredential(credential);
 
 
 
@@ -66,38 +71,50 @@ public class VerifyNumber extends AppCompatActivity {
 
     }
 
-//    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d(TAG, "signInWithCredential:success");
-//
-//                            FirebaseUser user = task.getResult().getUser();
-//                            // ...
-//                        } else {
-//                            // Sign in failed, display a message and update the UI
-//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-//                                // The verification code entered was invalid
-//                            }
-//                        }
-//                    }
-//                });
-//    }
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information and Go to Main Page
+                            mCurrentUser.getUid();  //used to create user table
+
+                            goToMainPage();
+
+                            // ...
+                        } else {
+                            // Sign in failed, display a message and update the UI
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // The verification code entered was invalid
+                                mMessage.setText("A verification error has occured");
+                                mMessage.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        mVerify.setEnabled(true);
+                    }
+                });
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
         if(mCurrentUser!=null){         //Go to the Chat Page
-            Intent home = new Intent(VerifyNumber.this, MainActivity.class);
-            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(home);
-            finish();
+            goToMainPage();
         }
+    }
+    public void onBackPressed() {
+        // super.onBackPressed();
+        Toast.makeText(VerifyNumber.this,"There is no back action",Toast.LENGTH_LONG).show();
+        return;
+    }
+    public void goToMainPage(){
+        Intent home = new Intent(VerifyNumber.this, MainActivity.class);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(home);
+        finish();
     }
 
 

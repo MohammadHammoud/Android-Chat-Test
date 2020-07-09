@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -124,6 +125,11 @@ public class SignUpPage extends AppCompatActivity {
 
 
 
+    }
+    public void onBackPressed() {
+        // super.onBackPressed();
+        Toast.makeText(SignUpPage.this,"There is no back action",Toast.LENGTH_LONG).show();
+        return;
     }
 
     @Override
