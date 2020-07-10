@@ -141,11 +141,7 @@ public class SignUpPage extends AppCompatActivity {
 
 
     }
-    public void onBackPressed() {
-        // super.onBackPressed();
-        Toast.makeText(SignUpPage.this,"There is no back action",Toast.LENGTH_LONG).show();
-        return;
-    }
+
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)

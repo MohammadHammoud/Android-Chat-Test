@@ -107,11 +107,7 @@ public class VerifyNumber extends AppCompatActivity {
             goToMainPage();
         }
     }
-    public void onBackPressed() {
-        // super.onBackPressed();
-        Toast.makeText(VerifyNumber.this,"There is no back action",Toast.LENGTH_LONG).show();
-        return;
-    }
+
     public void goToMainPage(){
         Intent home = new Intent(VerifyNumber.this, MainActivity.class);
         home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

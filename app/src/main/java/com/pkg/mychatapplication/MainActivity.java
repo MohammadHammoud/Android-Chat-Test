@@ -58,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public void onBackPressed() {
-        // super.onBackPressed();
-        Toast.makeText(MainActivity.this,"There is no back action",Toast.LENGTH_LONG).show();
-        return;
-    }
+//    public void onBackPressed() {
+//        // super.onBackPressed();
+//        Toast.makeText(MainActivity.this,"There is no back action",Toast.LENGTH_LONG).show();
+//        return;
+//    }
     public void goToSignUp(){
             Intent login = new Intent(MainActivity.this, SignUpPage.class);
             login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
