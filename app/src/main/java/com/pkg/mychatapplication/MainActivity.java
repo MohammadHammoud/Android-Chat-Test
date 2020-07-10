@@ -3,16 +3,13 @@ package com.pkg.mychatapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -21,9 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private Toolbar mToolbar;
-    private ViewPager mViewPager;
-    private FragmentsAdapter mAdapter;
-    private TabLayout mTabLayout;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -53,14 +47,6 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Chat");
-
-        mViewPager = findViewById(R.id.tab_pager);
-        mAdapter = new FragmentsAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mAdapter);
-        mTabLayout = findViewById(R.id.main_tabs);
-        mTabLayout.setupWithViewPager(mViewPager);
-
-
     }
 
     @Override
