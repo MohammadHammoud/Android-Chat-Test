@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MyChatApplication</string>
+    <string name="logout">Logout</string>
+    <string name="sign_up_login">Sign Up/Login</string>
+    <string name="your_phone_number">Your Phone Number</string>
+    <string name="_961">+961</string>
+    <string name="welcome_aboard">Welcome Aboard!</string>
+    <string name="please_enter_your_country_code_n_and_phone_number_for_verification">Please enter your Country Code   and Phone number for verification</string>
+    <string name="working">Working . . .</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="enter_code">Enter Code</string>
+    <string name="we_have_sent_you_an_sms_n_for_phone_number_verification">We have sent you an SMS   for phone number verification</string>
+    <string name="enter_verification_code">Enter Verification Code</string>
+    <string name="all_users">All Users</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
