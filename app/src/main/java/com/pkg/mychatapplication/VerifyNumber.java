@@ -38,7 +38,7 @@ public class VerifyNumber extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_number);
         mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
+
         mVerifyCode = this.getIntent().getStringExtra("VerificationCode");        //retrieve the verification code received in previous page
 
         mVerify = findViewById(R.id.verify_btn);
@@ -78,7 +78,10 @@ public class VerifyNumber extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information and Go to Main Page
-                            mCurrentUser.getUid();  //used to create user table
+
+                            mCurrentUser = mAuth.getCurrentUser();
+
+                           // Toast.makeText(VerifyNumber.this, mCurrentUser.getUid().toString()  ,Toast.LENGTH_LONG).show();
 
                             goToMainPage();
 

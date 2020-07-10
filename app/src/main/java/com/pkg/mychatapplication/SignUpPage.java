@@ -61,12 +61,14 @@ public class SignUpPage extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 //auto login
+                signInWithPhoneAuthCredential(phoneAuthCredential);
 
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                mMessage.setText("Verification failed.Try Again");
+                mMessage.setText(e.getMessage());
+               // mMessage.setText("Verification failed.Try Again");
                 mMessage.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mSignUpButton.setEnabled(true);
@@ -128,6 +130,7 @@ public class SignUpPage extends AppCompatActivity {
                                  mCallbacks);        // OnVerificationStateChangedCallbacks
                      }
                 } catch (final Exception e) {
+                    Toast.makeText(SignUpPage.this,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
 
@@ -144,6 +147,26 @@ public class SignUpPage extends AppCompatActivity {
         return;
     }
 
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(SignUpPage.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            goToMainPage();
+                            // ...
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // The verification code entered was invalid
+                                mMessage.setVisibility(View.VISIBLE);
+                                mMessage.setText("There was an error verifying OTP");
+                            }
+                        }
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        mSignUpButton.setEnabled(true);
+                    }
+                });
+    }
 
 
 
