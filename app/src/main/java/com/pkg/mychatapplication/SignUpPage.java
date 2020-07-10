@@ -130,7 +130,9 @@ public class SignUpPage extends AppCompatActivity {
                                  mCallbacks);        // OnVerificationStateChangedCallbacks
                      }
                 } catch (final Exception e) {
-                    Toast.makeText(SignUpPage.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    //USE THIS FOR TESTING
+
+                   // Toast.makeText(SignUpPage.this,e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
 
