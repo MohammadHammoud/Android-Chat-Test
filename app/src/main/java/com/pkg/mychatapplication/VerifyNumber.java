@@ -44,7 +44,7 @@ public class VerifyNumber extends AppCompatActivity {
         mVerify = findViewById(R.id.verify_btn);
         mCode = findViewById(R.id.otp_text_view);
         mProgressBar = findViewById(R.id.otp_progress_bar);
-        mMessage = findViewById(R.id.otp_text_view);
+        mMessage = findViewById(R.id.otp_form_feedback);
 
         mVerify.setOnClickListener(new View.OnClickListener() {
             @Override

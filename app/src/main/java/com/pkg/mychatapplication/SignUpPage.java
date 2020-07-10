@@ -146,30 +146,7 @@ public class SignUpPage extends AppCompatActivity {
 
 
 
-    public void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information and Go to Main Page
-                            mCurrentUser.getUid();  //used to create user table
-                            signInWithPhoneAuthCredential(credential);
 
-                            // ...
-                        } else {
-                            // Sign in failed, display a message and update the UI
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                mMessage.setText("A verification error has occured");
-                                mMessage.setVisibility(View.VISIBLE);
-                            }
-                        }
-                        mProgressBar.setVisibility(View.INVISIBLE);
-                        mSignUpButton.setEnabled(true);
-                    }
-                });
-    }
 
     public void goToMainPage(){
         Intent home = new Intent(SignUpPage.this, MainActivity.class);
@@ -184,11 +161,7 @@ public class SignUpPage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if(mCurrentUser!=null){         //Go to the Chat Page
-            Intent home = new Intent(SignUpPage.this, MainActivity.class);
-            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(home);
-            finish();
+           goToMainPage();
         }
     }
 }
