@@ -71,7 +71,7 @@ public class VerifyNumber extends AppCompatActivity {
 
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    public void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override

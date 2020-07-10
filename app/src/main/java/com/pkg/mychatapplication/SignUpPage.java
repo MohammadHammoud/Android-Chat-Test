@@ -13,8 +13,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -22,6 +26,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +41,8 @@ public class SignUpPage extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private TextView mMessage;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +60,16 @@ public class SignUpPage extends AppCompatActivity {
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                //auto login
 
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
+                mMessage.setText("Verification failed.Try Again");
+                mMessage.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.INVISIBLE);
+                mSignUpButton.setEnabled(true);
 
             }
 
@@ -131,6 +143,42 @@ public class SignUpPage extends AppCompatActivity {
         Toast.makeText(SignUpPage.this,"There is no back action",Toast.LENGTH_LONG).show();
         return;
     }
+
+
+
+    public void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information and Go to Main Page
+                            mCurrentUser.getUid();  //used to create user table
+                            signInWithPhoneAuthCredential(credential);
+
+                            // ...
+                        } else {
+                            // Sign in failed, display a message and update the UI
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // The verification code entered was invalid
+                                mMessage.setText("A verification error has occured");
+                                mMessage.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        mSignUpButton.setEnabled(true);
+                    }
+                });
+    }
+
+    public void goToMainPage(){
+        Intent home = new Intent(SignUpPage.this, MainActivity.class);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(home);
+        finish();
+    }
+
 
     @Override
     protected void onStart() {
