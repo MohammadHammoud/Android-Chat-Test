@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
              goToSignUp();      //update the UI
 
          }
+         if (item.getItemId()==R.id.profile){  //Clicked on the Profile button
+             goToProfile();
+
+
+         }
          return true;
 
     }
@@ -83,6 +88,14 @@ public class MainActivity extends AppCompatActivity {
             login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(login);
             finish();
+
+    }
+    public void goToProfile(){
+        Intent login = new Intent(MainActivity.this, ProfileActivity.class);
+        login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(login);
+        finish();
 
     }
 

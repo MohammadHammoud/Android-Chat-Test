@@ -22,11 +22,17 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +47,8 @@ public class SignUpPage extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private TextView mMessage;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private String myNum;
+    private DatabaseReference mDatabase ;
 
 
 
@@ -80,6 +88,7 @@ public class SignUpPage extends AppCompatActivity {
                 super.onCodeSent(s, forceResendingToken);
                 Intent Verify = new Intent(SignUpPage.this, VerifyNumber.class);
                 Verify.putExtra("VerificationCode", s);       //send the verification code received to the VerifyNumber page
+                Verify.putExtra("PhoneNumber",myNum);
                 startActivity(Verify);
 
 
@@ -96,7 +105,8 @@ public class SignUpPage extends AppCompatActivity {
             public void onClick(View view) {
                 String CountCode = mCountryCode.getText().toString();
                 String PhoneNum = mPhoneNumber.getText().toString();
-                String fullNum = "+"+CountCode+PhoneNum;
+                String  fullNum = "+"+CountCode+PhoneNum;
+                myNum = "+" +CountCode+"-"+PhoneNum;
 
                 if(CountCode.isEmpty() || PhoneNum.isEmpty()){
                     mMessage.setText("Please fill the empty fields");
@@ -117,6 +127,7 @@ public class SignUpPage extends AppCompatActivity {
                          mMessage.setVisibility(View.VISIBLE);
                      }
                      else{      //Everything is valid
+
 
                          mProgressBar.setVisibility(View.VISIBLE);      //ProgressBar is now visible
 
@@ -151,6 +162,41 @@ public class SignUpPage extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            //This is the case where auto verification happens
+                            //Create the user in database if it doesn't exist
+                            mCurrentUser = mAuth.getCurrentUser();
+
+
+
+                            // Toast.makeText(VerifyNumber.this, mCurrentUser.getUid().toString()  ,Toast.LENGTH_LONG).show();
+                            mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
+                            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.getValue() == null) {
+                                        // The User doesn't exist
+                                        //Create new User with this ID
+                                        HashMap<String,String> UserMap = new HashMap<String, String>();
+                                        UserMap.put("phoneNumber", myNum);
+
+
+                                        UserMap.put("image","https://firebasestorage.googleapis.com/v0/b/mychatapplication-8f040.appspot.com/o/Default_Picture%2Fuser2.jpg?alt=media&token=f8ea3c03-0363-41ee-ab09-ec8f5625c66a");
+                                        mDatabase.setValue(UserMap);
+                                    }
+                                    else{
+                                        //The user already exists, don't add anything to the database
+
+
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                             goToMainPage();
                             // ...
                         } else {
@@ -171,6 +217,7 @@ public class SignUpPage extends AppCompatActivity {
 
     public void goToMainPage(){
         Intent home = new Intent(SignUpPage.this, MainActivity.class);
+        home.putExtra("PhoneNumber",myNum);
         home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(home);
