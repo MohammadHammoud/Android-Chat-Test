@@ -27,7 +27,6 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseUser mCurrentUser;
     private CircleImageView mImgView;
     private TextView mTextView;
-    private StorageReference mStroage;
     private String mImage;
 
 
@@ -36,7 +35,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        mStroage = FirebaseStorage.getInstance().getReference().child("Default_Picture");
 
         mImgView = findViewById(R.id.profilePic);
         mTextView = findViewById(R.id.Display_number);

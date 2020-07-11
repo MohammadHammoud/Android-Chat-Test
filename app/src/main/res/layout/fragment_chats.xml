@@ -6,6 +6,7 @@
     tools:context=".ChatsFragment"
 
     >
+    <include layout="@layout/activity_users" android:id="@+id/activity_users"/>
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
