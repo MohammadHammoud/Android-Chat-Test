@@ -3,6 +3,7 @@ package com.pkg.mychatapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -15,6 +16,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -25,6 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
     private CircleImageView mImgView;
     private TextView mTextView;
     private StorageReference mStroage;
+    private String mImage;
 
 
     @Override
@@ -40,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         String myUserID = mCurrentUser.getUid();
         mUserReference = FirebaseDatabase.getInstance().getReference().child("Users").child(myUserID); //Current User
+        mUserReference.keepSynced(true);  //offline capabilities
         //Retrieve this user data
         mUserReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -48,9 +53,22 @@ public class ProfileActivity extends AppCompatActivity {
                 //But for the sake of learning, I retrieved it from the database
                 String mPhoneNumber = snapshot.child("phoneNumber").getValue().toString();
 
-                String mImage = snapshot.child("image").getValue().toString();  //Should be a link to the image place in storage
+                 mImage = snapshot.child("image").getValue().toString();  //Should be a link to the image place in storage
                 mTextView.setText(mPhoneNumber);
-                Picasso.get().load(mImage).into(mImgView);
+                Picasso.get().load(mImage).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.user2).into(mImgView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        //do nothing. Image successfully loaded while offline
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        //if failed go take it from firebase
+                        Picasso.get().load(mImage).placeholder(R.drawable.user2).into(mImgView);
+
+
+                        }
+                });
 
 
 
@@ -66,6 +84,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent home = new Intent(ProfileActivity.this, MainActivity.class);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(home);
+        finish();
     }
 }
